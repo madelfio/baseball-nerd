@@ -150,7 +150,7 @@ if (typeof module !== 'undefined' && module.exports && require.main === module) 
 
   var setup = function() {
     if (typeof d3 !== 'undefined') {
-      if (d3.select('#yspheadtoheadstats')) {
+      if (document.getElementById('yspheadtoheadstats')) {
         parse();
         process();
         render();
