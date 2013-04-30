@@ -23,12 +23,13 @@ function parse() {
       });
 }
 
+
 function asc(a, b) {return parseFloat(a) - parseFloat(b);}
 function desc(a, b) {return parseFloat(b) - parseFloat(a);}
 
+
 function rotoRank(vals, comp) {
   var rotoRank = {},
-      vals = vals,
       comp = comp || asc,
       lookup = {};
 
@@ -76,6 +77,7 @@ function process() {
   teams.sort(function(a, b) {return b['Total'] - a['Total'];});
 }
 
+
 function render() {
   // gracefully remove old table if one already exists
   if (document.getElementById('yahoo-bookmarklet')) {
@@ -88,9 +90,7 @@ function render() {
       return;
   }
 
-  d3.select('head').append('style')
-      .html('#yahoo-bookmarklet td {padding:2px 6px;}');
-
+  // add padding to bottom of page to ensure page is visible behind popup
   d3.select('#doc4').style('margin-bottom', '200px');
 
   var div = d3.select('body')
@@ -106,8 +106,9 @@ function render() {
       .style('padding', '3px')
       .style('border-top-right-radius', '4px');
 
-  var title = div.append('div')
-      .style('height', '20px');
+  div.transition().duration(1000)
+      .style('bottom', '0px')
+      .style('left', '0px');
 
   var roto_table = div.append('table');
 
@@ -116,6 +117,7 @@ function render() {
       .data(cols).enter()
     .append('td')
       .text(function(d, i) {return d;})
+      .style('padding', '2px 6px')
       .style('font-weight', 'bold');
 
   roto_table.selectAll('tr.data')
@@ -127,23 +129,21 @@ function render() {
         cols.forEach(function(c, j) {
           r.append('td')
             .text(d[c])
+            .style('padding', '2px 6px')
             .style('font-weight', ['Total', 'Team Name'].indexOf(c) >= 0 ? 'bold' : '')
             .style('text-align', j > 0 ? 'right' : '');
         });
       });
-
-  div.transition().duration(1000)
-      .style('bottom', '0px')
-      .style('left', '0px');
 }
+
 
 // run tests if running from node.js
 if (typeof module !== 'undefined' && module.exports && require.main === module) {
   var assert = require('assert');
   assert.deepEqual(rotoRank([1, 9, 11, 102]).ranks(), [1, 2, 3, 4]);
   assert.deepEqual(rotoRank(['116', '99', '57', '94']).ranks(), [4, 3, 1, 2]);
-  assert.deepEqual(rotoRank(['15', '7', '5', '11', '10', '8', '8', '18', '9', '10', '7', '9']).ranks(),
-                            [11, 2.5, 1, 10, 8.5, 4.5, 4.5, 12, 6.5, 8.5, 2.5, 6.5]);
+  assert.deepEqual(rotoRank(['7', '5', '10', '8', '8', '9', '10', '7', '9']).ranks(),
+                            [2.5, 1, 8.5, 4.5, 4.5, 6.5, 8.5, 2.5, 6.5]);
   console.log('all tests passed');
 } else {
   var delay = 100;
