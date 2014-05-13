@@ -1,5 +1,8 @@
 "use strict";
 
+/* jshint browser:true, node:true, sub:true */
+/* global d3 */
+
 var cols = [],
     teams = [];
 
@@ -29,9 +32,10 @@ function desc(a, b) {return parseFloat(b) - parseFloat(a);}
 
 
 function rotoRank(vals, comp) {
-  var rotoRank = {},
-      comp = comp || asc,
+  var _rotoRank = {},
       lookup = {};
+
+  comp = comp || asc;
 
   (function rotoMap(vals, comp) {
     var sortedVals = vals.slice(0).sort(comp);
@@ -46,11 +50,11 @@ function rotoRank(vals, comp) {
     }
   })(vals, comp);
 
-  rotoRank.ranks = function() {
+  _rotoRank.ranks = function() {
     return vals.map(function(v) {return lookup[v];});
-  }
+  };
 
-  return rotoRank;
+  return _rotoRank;
 }
 
 
@@ -59,7 +63,7 @@ function process() {
 
   cols.forEach(function(c, i) {
     var vals, ranks, order;
-    if (i == 0) {return;}
+    if (i === 0) {return;}
     order = lowIsGood(c) ? desc : asc;
 
     vals = teams.map(function(t) {return t[c];});
@@ -150,7 +154,7 @@ if (typeof module !== 'undefined' && module.exports && require.main === module) 
 
   var setup = function() {
     if (typeof d3 !== 'undefined') {
-      if (document.getElementById('yspheadtoheadstats')) {
+      if (document.getElementById('headtohead-stats')) {
         parse();
         process();
         render();
